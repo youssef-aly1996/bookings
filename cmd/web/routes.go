@@ -18,8 +18,11 @@ func routes(repo *handlers.Repository) http.Handler {
 	mux.Get("/about", repo.About)
 	mux.Get("/generals-quarters", repo.Generals)
 	mux.Get("/majors-suite", repo.Majors)
+
 	mux.Get("/search-availability", repo.SearchAvailability)
 	mux.Post("/search-availability", repo.PostAvailability)
+	mux.Get("/search-availability-json", repo.CkeckAvailabilityJson)
+
 	mux.Get("/make-reservation", repo.Reservation)
 	mux.Get("/contact", repo.Contact)
 

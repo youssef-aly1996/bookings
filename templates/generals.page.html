@@ -27,28 +27,5 @@
 {{end}}
 
 {{define "js"}}
-<script>
-  document.getElementById("search-availability-button").addEventListener("click", () => {
-    let html = `
-      <div class="col">
-          <form action="" method="post" id="search-availability-form" novalidate class="needs-validation">
-            <div class="form-row">
-              <div class="col">
-                <div class="form-row" id="reservation-dates-modal">
-                  <div class="col">
-                    <input disabled type="text" name="start" id="start" class="form-control" placeholder="Arrival" autocomplete="off">
-                  </div>
-                  <div class="col">
-                    <input disabled type="text" name="end" id="end" class="form-control" placeholder="Departure" autocomplete="off">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-      </div>
-        `;
-    // let html2 = `<input type="email" name="new-input" id="new-input"`           
-  attention().custom({msg:html, title: "choose the date"});
-  });
-</script>
+<script src="/static/js/sweetalerts.js"></script>
 {{end}}
