@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/youssef-aly1996/bookings/pkg/config"
+	"github.com/youssef-aly1996/bookings/pkg/models"
 )
 
 var functions = template.FuncMap{}
@@ -17,7 +18,7 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(rw http.ResponseWriter, tmpl string, td interface{}) {
+func RenderTemplate(rw http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 	var err error
 	if app.UseCache {

@@ -1,0 +1,15 @@
+.my-footer {
+    height: 5em;
+    margin-top: 1.5em;
+    padding: 1em;
+    background-color: gray;
+  }
+
+  .room-iamge {
+    width: 50%;
+  }
+  .datepicker {
+    position: sticky;
+    /* height: 100%; */
+    /* overflow: auto; */
+  }
