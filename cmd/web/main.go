@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/youssef-aly1996/bookings/pkg/config"
-	"github.com/youssef-aly1996/bookings/pkg/handlers"
-	"github.com/youssef-aly1996/bookings/pkg/render"
+	"github.com/youssef-aly1996/bookings/internal/config"
+	"github.com/youssef-aly1996/bookings/internal/handlers"
+	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
 var appConfig = config.NewAppConfig()

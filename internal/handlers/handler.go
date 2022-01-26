@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	"github.com/justinas/nosurf"
-	"github.com/youssef-aly1996/bookings/pkg/config"
-	"github.com/youssef-aly1996/bookings/pkg/models"
-	"github.com/youssef-aly1996/bookings/pkg/render"
+	"github.com/youssef-aly1996/bookings/internal/config"
+	"github.com/youssef-aly1996/bookings/internal/models"
+	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
 type Repository struct {

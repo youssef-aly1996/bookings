@@ -9,7 +9,7 @@
                 focusConfirm: false,
                 showCancelButton: true,
                 willOpen: () => {
-                  const elem = document.getElementById("search-availability-form");
+                  const elem = document.getElementById("reservation-dates-modal");
                   const rangePicker = new DateRangePicker(elem, {
                     format: "yyyy-mm-dd",
                   });
@@ -27,7 +27,18 @@
               });
 
               if (formValues) {
-                Swal.fire(JSON.stringify(formValues))
+                if (formValues.dismiss !== Swal.DismissReason.cancel) {
+                  if (formValues !== "") {
+                    if (c.callback !== undefined) {
+                      c.callback(formValues)
+                    } else {
+                      c.callback(false);
+                    }
+                  }
+                  
+                } else {
+                  c.callback(false);
+                }
             }
 }
 
@@ -51,5 +62,19 @@ document.getElementById("search-availability-button").addEventListener("click", 
           </form>
       </div>
         `;
-  custom({msg:html, title: "choose the date"});
+      custom({
+        msg:html, 
+        title: "choose the date",
+        callback: async function (formValues) {
+          let form = document.getElementById("search-availability-form");
+          let formData = new FormData(form);
+          formData.append('csrf_token', '{{.CSRF}}');
+          const response = await fetch("/search-availability-json", {
+            method: 'sayed',
+            body: formData,
+          });
+          let json = await response.json()
+          console.log(json);
+        },
+      });
   });
