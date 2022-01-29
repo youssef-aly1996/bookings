@@ -43,7 +43,7 @@ func RenderTemplate(rw http.ResponseWriter, tmpl string, td *models.TemplateData
 
 func CreateTempalteCache() (map[string]*template.Template, error) {
 	tempalteCache := map[string]*template.Template{}
-	pages, err := filepath.Glob("./templates/*.page.html")
+	pages, err := filepath.Glob("./templates/*.page.tmpl")
 	if err != nil {
 		return nil, err
 	}
@@ -53,12 +53,12 @@ func CreateTempalteCache() (map[string]*template.Template, error) {
 		if err != nil {
 			return nil, err
 		}
-		matches, err := filepath.Glob("./templates/*.layout.html")
+		matches, err := filepath.Glob("./templates/*.layout.tmpl")
 		if err != nil {
 			return nil, err
 		}
 		if len(matches) > 0 {
-			tempalteSet, err = tempalteSet.ParseGlob("./templates/*.layout.html")
+			tempalteSet, err = tempalteSet.ParseGlob("./templates/*.layout.tmpl")
 		}
 		if err != nil {
 			return nil, err

@@ -70,8 +70,9 @@ document.getElementById("search-availability-button").addEventListener("click", 
           let formData = new FormData(form);
           formData.append('csrf_token', '{{.CSRF}}');
           const response = await fetch("/search-availability-json", {
-            method: 'sayed',
+            method: 'post',
             body: formData,
+            headers: new Headers({'X-Form':'post-it'})
           });
           let json = await response.json()
           console.log(json);

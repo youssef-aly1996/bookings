@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
 	"net/http"
 	"time"
@@ -15,6 +16,8 @@ var appConfig = config.NewAppConfig()
 var session *scs.SessionManager
 
 func main() {
+	//what i am going to put into the session
+	gob.Register(handlers.EmptyReservation)
 	//creating application session
 	appConfig.InProduction = false
 	session = scs.New()
@@ -40,6 +43,7 @@ func main() {
 		Addr:    appConfig.PortNumber,
 		Handler: routes(repo),
 	}
+	log.Println("server is up and running on port 3000")
 	err = server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)

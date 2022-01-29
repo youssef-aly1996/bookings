@@ -12,6 +12,7 @@ func routes(repo *handlers.Repository) http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(middleware.Recoverer)
 	mux.Use(noSurf)
+	// mux.Use(scrfLoad)
 	mux.Use(sessionLoad)
 
 	mux.Get("/", repo.Home)
@@ -24,6 +25,9 @@ func routes(repo *handlers.Repository) http.Handler {
 	mux.Post("/search-availability-json", repo.CkeckAvailabilityJson)
 
 	mux.Get("/make-reservation", repo.Reservation)
+	mux.Post("/make-reservation", repo.PostReservation)
+	mux.Get("/reservation-summary", repo.ReservationSummary)
+
 	mux.Get("/contact", repo.Contact)
 
 	fileServer := http.FileServer(http.Dir("./static"))
