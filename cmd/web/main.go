@@ -13,9 +13,29 @@ import (
 )
 
 var appConfig = config.NewAppConfig()
+
+//handlers loading
+var repo = handlers.NewRepository(appConfig)
+
 var session *scs.SessionManager
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	appConfig.PortNumber = ":3000"
+	server := &http.Server{
+		Addr:    appConfig.PortNumber,
+		Handler: routes(repo),
+	}
+	log.Println("server is up and running on port 3000")
+	err = server.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+func run() error {
 	//what i am going to put into the session
 	gob.Register(handlers.EmptyReservation)
 	//creating application session
@@ -31,21 +51,11 @@ func main() {
 	tc, err := render.CreateTempalteCache()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 	appConfig.TempalteCache = tc
 	appConfig.UseCache = false
 	render.NewTemplate(appConfig)
 
-	//handlers loading
-	repo := handlers.NewRepository(appConfig)
-	appConfig.PortNumber = ":3000"
-	server := &http.Server{
-		Addr:    appConfig.PortNumber,
-		Handler: routes(repo),
-	}
-	log.Println("server is up and running on port 3000")
-	err = server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
+	return nil
 }

@@ -31,6 +31,7 @@ func SetCsrf(r *http.Request) {
 
 //Home renders the home page template
 func (repo *Repository) Home(rw http.ResponseWriter, r *http.Request) {
+	td.Error = ""
 	remoteIp := r.RemoteAddr
 	repo.App.Session.Put(r.Context(), "remote_ip", remoteIp)
 	render.RenderTemplate(rw, "home.page.tmpl", td)
@@ -110,7 +111,7 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 
 	form := forms.NewForm(r.PostForm)
 	form.Required("first_name", "last_name", "email")
-	form.MinLength("first_name", 5, r)
+	form.MinLength("first_name", 5)
 	form.IsEmail("email")
 	if !form.Valid() {
 		data := make(map[string]interface{})
@@ -130,6 +131,7 @@ func (repo *Repository) ReservationSummary(rw http.ResponseWriter, r *http.Reque
 		log.Println("cannot get the reservation model from the seesion")
 		repo.App.Session.Put(r.Context(), "error", "cannot get reservation model from the seesion")
 		td.Error = repo.App.Session.PopString(r.Context(), "error")
+		// repo.App.Session.Remove(r.Context(), "error")
 		http.Redirect(rw, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
