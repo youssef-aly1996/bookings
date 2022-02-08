@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -27,6 +28,8 @@ var session *scs.SessionManager
 var repo = NewRepository(appConfig)
 
 func getRoutes() http.Handler {
+	appConfig.Logger = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	appConfig.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	//what i am going to put into the session
 	gob.Register(EmptyReservation)
 	//creating application session

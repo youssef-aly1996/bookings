@@ -1,6 +1,7 @@
 package render
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -13,6 +14,9 @@ var td = models.NewTemplateData()
 var testApp = config.NewAppConfig()
 
 func TestMain(m *testing.M) {
+	testApp.Logger = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	testApp.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	NewTemplate(testApp)
 	testApp.UseCache = false
 	os.Exit(m.Run())

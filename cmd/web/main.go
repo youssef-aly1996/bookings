@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -12,12 +13,13 @@ import (
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
-var appConfig = config.NewAppConfig()
+var (
+	appConfig = config.NewAppConfig()
+	//handlers loading
+	repo = handlers.NewRepository(appConfig)
 
-//handlers loading
-var repo = handlers.NewRepository(appConfig)
-
-var session *scs.SessionManager
+	session *scs.SessionManager
+)
 
 func main() {
 	err := run()
@@ -36,6 +38,10 @@ func main() {
 	}
 }
 func run() error {
+	//Logging info and error info part
+	appConfig.Logger = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	appConfig.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	//what i am going to put into the session
 	gob.Register(handlers.EmptyReservation)
 	//creating application session
