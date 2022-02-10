@@ -12,9 +12,6 @@ import (
 var (
 	//intializing the tempalate data
 	td = models.NewTemplateData()
-	//intializing reservation model struct
-	EmptyReservation = models.NewReservation()
-	//intializing erroring struct
 )
 
 type Repository struct {

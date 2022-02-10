@@ -15,6 +15,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/justinas/nosurf"
 	"github.com/youssef-aly1996/bookings/internal/config"
+	"github.com/youssef-aly1996/bookings/internal/models/reservation"
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
@@ -31,7 +32,7 @@ func getRoutes() http.Handler {
 	appConfig.Logger = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	appConfig.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	//what i am going to put into the session
-	gob.Register(EmptyReservation)
+	gob.Register(reservation.Reservation{})
 	//creating application session
 	appConfig.InProduction = false
 	session = scs.New()

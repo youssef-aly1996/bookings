@@ -8,5 +8,5 @@ import (
 
 //Home renders the home page template
 func (repo *Repository) Home(rw http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(rw, "home.page.tmpl", td)
+	render.Template(rw, "home.page.tmpl", td)
 }

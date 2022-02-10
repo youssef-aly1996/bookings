@@ -11,7 +11,7 @@ import (
 //SearchAvailability renders the search availability page template
 func (repo *Repository) SearchAvailability(rw http.ResponseWriter, r *http.Request) {
 	SetCsrf(r)
-	render.RenderTemplate(rw, "search-availability.page.tmpl", td)
+	render.Template(rw, "search-availability.page.tmpl", td)
 }
 
 //PostAvailability renders the search availability page template

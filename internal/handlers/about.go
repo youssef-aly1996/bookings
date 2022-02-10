@@ -8,5 +8,5 @@ import (
 
 //About renders the about page template
 func (repo *Repository) About(rw http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(rw, "about.page.tmpl", td)
+	render.Template(rw, "about.page.tmpl", td)
 }

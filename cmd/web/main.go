@@ -10,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/youssef-aly1996/bookings/internal/config"
 	"github.com/youssef-aly1996/bookings/internal/handlers"
+	"github.com/youssef-aly1996/bookings/internal/models/reservation"
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
@@ -43,7 +44,7 @@ func run() error {
 	appConfig.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	//what i am going to put into the session
-	gob.Register(handlers.EmptyReservation)
+	gob.Register(reservation.Reservation{})
 	//creating application session
 	appConfig.InProduction = false
 	session = scs.New()

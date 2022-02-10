@@ -21,7 +21,7 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(rw http.ResponseWriter, tmpl string, td *models.TemplateData) error {
+func Template(rw http.ResponseWriter, tmpl string, td *models.TemplateData) error {
 	var tc map[string]*template.Template
 	var err error
 	if app.UseCache {

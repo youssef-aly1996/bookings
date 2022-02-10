@@ -9,5 +9,5 @@ import (
 //Majors renders the major suite page template
 func (repo *Repository) Majors(rw http.ResponseWriter, r *http.Request) {
 	SetCsrf(r)
-	render.RenderTemplate(rw, "majors.page.tmpl", td)
+	render.Template(rw, "majors.page.tmpl", td)
 }

@@ -5,18 +5,20 @@ import (
 	"net/http"
 
 	"github.com/youssef-aly1996/bookings/internal/forms"
-	"github.com/youssef-aly1996/bookings/internal/models"
+	"github.com/youssef-aly1996/bookings/internal/models/reservation"
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
+
+var res = reservation.Reservation{}
 
 //Reservation renders the make reservation page template
 func (repo *Repository) Reservation(rw http.ResponseWriter, r *http.Request) {
 	data := make(map[string]interface{})
-	data["reservation"] = EmptyReservation
+	data["reservation"] = res
 	SetCsrf(r)
 	td.Form = forms.NewForm(nil)
 	td.Data = data
-	render.RenderTemplate(rw, "make-reservation.page.tmpl", td)
+	render.Template(rw, "make-reservation.page.tmpl", td)
 }
 
 //PostReservation allows clients to fill out a new reservation form
@@ -26,10 +28,10 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 		repo.ServerErrors(rw, err)
 		return
 	}
-	EmptyReservation.FirstName = r.Form.Get("first_name")
-	EmptyReservation.LastName = r.FormValue("last_name")
-	EmptyReservation.Email = r.FormValue("email")
-	EmptyReservation.Phone = r.FormValue("phone")
+	res.FirstName = r.Form.Get("first_name")
+	res.LastName = r.FormValue("last_name")
+	res.Email = r.FormValue("email")
+	res.Phone = r.FormValue("phone")
 
 	form := forms.NewForm(r.PostForm)
 	form.Required("first_name", "last_name", "email")
@@ -37,18 +39,18 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 	form.IsEmail("email")
 	if !form.Valid() {
 		data := make(map[string]interface{})
-		data["reservation"] = EmptyReservation
+		data["reservation"] = res
 		td.Data = data
 		td.Form = form
-		render.RenderTemplate(rw, "make-reservation.page.tmpl", td)
+		render.Template(rw, "make-reservation.page.tmpl", td)
 		return
 	}
-	repo.App.Session.Put(r.Context(), "reservation", EmptyReservation)
+	repo.App.Session.Put(r.Context(), "reservation", res)
 	http.Redirect(rw, r, "/reservation-summary", http.StatusSeeOther)
 }
 
 func (repo *Repository) ReservationSummary(rw http.ResponseWriter, r *http.Request) {
-	reservation, ok := repo.App.Session.Get(r.Context(), "reservation").(*models.Reservation)
+	reservation, ok := repo.App.Session.Get(r.Context(), "reservation").(reservation.Reservation)
 	if !ok {
 		log.Println("cannot get the reservation model from the seesion")
 		repo.App.Session.Put(r.Context(), "error", "cannot get reservation model from the seesion")
@@ -61,5 +63,5 @@ func (repo *Repository) ReservationSummary(rw http.ResponseWriter, r *http.Reque
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 	td.Data = data
-	render.RenderTemplate(rw, "reservation-summary.page.tmpl", td)
+	render.Template(rw, "reservation-summary.page.tmpl", td)
 }

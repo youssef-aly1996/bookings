@@ -14,11 +14,11 @@ func TestRenderTemplate(t *testing.T) {
 	testApp.TempalteCache = tc
 
 	mw := myWriter{}
-	err = RenderTemplate(mw, "home.page.tmpl", td)
+	err = Template(mw, "home.page.tmpl", td)
 	if err != nil {
 		t.Error("failed writing template to the browser")
 	}
-	err = RenderTemplate(mw, "sayed.page.tmpl", td)
+	err = Template(mw, "sayed.page.tmpl", td)
 	if err == nil {
 		t.Error("we rendered a template that not exist")
 	}
