@@ -3,9 +3,12 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/youssef-aly1996/bookings/internal/forms"
 	"github.com/youssef-aly1996/bookings/internal/models/reservation"
+	"github.com/youssef-aly1996/bookings/internal/models/roomrestriction"
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
@@ -28,10 +31,29 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 		repo.ServerErrors(rw, err)
 		return
 	}
+	layout := "2006-01-01"
+	sd := r.FormValue("start_date")
+	ed := r.FormValue("end_date")
+
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		repo.ServerErrors(rw, err)
+		return
+	}
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		repo.ServerErrors(rw, err)
+		return
+	}
+	rId, _ := strconv.Atoi(r.FormValue("room_id"))
+
 	res.FirstName = r.Form.Get("first_name")
 	res.LastName = r.FormValue("last_name")
 	res.Email = r.FormValue("email")
 	res.Phone = r.FormValue("phone")
+	res.StartDate = startDate
+	res.EndDate = endDate
+	res.RoomId = rId
 
 	form := forms.NewForm(r.PostForm)
 	form.Required("first_name", "last_name", "email")
@@ -45,6 +67,24 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 		render.Template(rw, "make-reservation.page.tmpl", td)
 		return
 	}
+	id, err := rs.Insert(res)
+	if err != nil {
+		repo.Erroring.ServerErrors(rw, err)
+	}
+	rm := roomrestriction.RoomRestriction{
+		StartDate:     startDate,
+		EndDate:       endDate,
+		RoomId:        rId,
+		ReservationId: id,
+		RestrictionId: 1,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+	}
+	err = rr.Insert(rm)
+	if err != nil {
+		repo.Erroring.ServerErrors(rw, err)
+	}
+
 	repo.App.Session.Put(r.Context(), "reservation", res)
 	http.Redirect(rw, r, "/reservation-summary", http.StatusSeeOther)
 }

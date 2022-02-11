@@ -12,7 +12,7 @@ type PgRepo struct {
 }
 
 const (
-	connStr         = "host=localhost port=5432 user=postgres password=joe1234 dbname=bookings sslmode=false"
+	connStr         = "host=localhost port=5432 user=postgres password=joe1234 dbname=bookings"
 	maxConns        = 10
 	maxConnIdleTime = 5 * time.Second
 	MaxConnLifetime = 5 * time.Second
