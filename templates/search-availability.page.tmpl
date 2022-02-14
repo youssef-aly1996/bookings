@@ -34,7 +34,8 @@
   //custom date picker function
   const elem = document.getElementById('reservation-date');
     const rangepicker = new DateRangePicker(elem, {
-      // ...options
+        format: "yyyy-mm-dd",
+        minDate: new Date(),
     });
 </script>
 {{end}}

@@ -11,6 +11,7 @@ import (
 	"github.com/youssef-aly1996/bookings/internal/config"
 	"github.com/youssef-aly1996/bookings/internal/handlers"
 	"github.com/youssef-aly1996/bookings/internal/models/reservation"
+	"github.com/youssef-aly1996/bookings/internal/models/user"
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
 
@@ -45,6 +46,7 @@ func run() error {
 
 	//what i am going to put into the session
 	gob.Register(reservation.Reservation{})
+	gob.Register(user.User{})
 	//creating application session
 	appConfig.InProduction = false
 	session = scs.New()

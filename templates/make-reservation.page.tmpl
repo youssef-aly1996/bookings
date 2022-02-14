@@ -9,6 +9,9 @@
 
         <form action="/make-reservation" method="post" name="make-reservation-form" class="" novalidate>
           <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+          <p class="text-uppercase p-3 mb-2 font-weight-bold bg-info text-white">Room Name: {{index .StringMap "room_name"}}</p>
+          <p class="text-uppercase p-3 mb-2 font-weight-bold bg-info text-white">Arrival: {{index .StringMap "start_date"}}</p>
+          <p class="text-uppercase p-3 mb-2 font-weight-bold bg-info text-white">Departure: {{index .StringMap "end_date"}}</p>
             <div class="form-group mt-4">        
                 <label for="first_name" class="col-form-label-lg">First Name:</label>
             {{with .Form.Errors.Get "first_name"}}
@@ -42,23 +45,6 @@
                 <input type="phone" name="phone" value="{{$res.Phone}}" 
                 id="phone" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" required autocomplete="off">
             </div>
-            <div class="form-group">
-                <label for="start_date" class="col-form-label-lg">Start Date:</label>
-            {{with .Form.Errors.Get "start_date"}}
-                <label class="col-form-label-lg text-danger">{{.}}</label>
-            {{end}}
-                <input type="text" name="start_date" value="{{$res.StartDate}}" 
-                id="start_date" class="form-control {{with .Form.Errors.Get "start_date"}}is-invalid{{end}}" required autocomplete="off">
-            </div>
-             <div class="form-group">
-                <label for="end_date" class="col-form-label-lg">End Date:</label>
-            {{with .Form.Errors.Get "end_date"}}
-                <label class="col-form-label-lg text-danger">{{.}}</label>
-            {{end}}
-                <input type="text" name="end_date" value="{{$res.EndDate}}" 
-                id="end_date" class="form-control {{with .Form.Errors.Get "end_date"}}is-invalid{{end}}" required autocomplete="off">
-            </div>
-                <input type="hidden" name="room_id" value="1"> 
             <hr>
             <input type="submit" value="Make Reservation" class="btn btn-primary">       
         </form>

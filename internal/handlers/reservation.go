@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -16,11 +17,29 @@ var res = reservation.Reservation{}
 
 //Reservation renders the make reservation page template
 func (repo *Repository) Reservation(rw http.ResponseWriter, r *http.Request) {
+	res, ok := repo.App.Session.Get(r.Context(), "reservation").(reservation.Reservation)
+	if !ok {
+		repo.Erroring.ServerErrors(rw, errors.New("cannot get reservation from the session"))
+		return
+	}
+	roomName, err := rh.GetById(res.RoomId)
+	if err != nil {
+		repo.Erroring.ServerErrors(rw, err)
+		return
+	}
+	layout := "2006-01-02"
+	sd := res.StartDate.Format(layout)
+	ed := res.EndDate.Format(layout)
+	strMap := make(map[string]string)
+	strMap["start_date"] = sd
+	strMap["end_date"] = ed
+	strMap["room_name"] = roomName
 	data := make(map[string]interface{})
 	data["reservation"] = res
 	SetCsrf(r)
 	td.Form = forms.NewForm(nil)
 	td.Data = data
+	td.StringMap = strMap
 	render.Template(rw, "make-reservation.page.tmpl", td)
 }
 
@@ -77,12 +96,11 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 		RoomId:        rId,
 		ReservationId: id,
 		RestrictionId: 1,
-		CreatedAt:     time.Now(),
-		UpdatedAt:     time.Now(),
 	}
 	err = rr.Insert(rm)
 	if err != nil {
 		repo.Erroring.ServerErrors(rw, err)
+		return
 	}
 
 	repo.App.Session.Put(r.Context(), "reservation", res)

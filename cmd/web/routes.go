@@ -23,6 +23,7 @@ func routes(repo *handlers.Repository) http.Handler {
 	mux.Get("/search-availability", repo.SearchAvailability)
 	mux.Post("/search-availability", repo.PostAvailability)
 	mux.Post("/search-availability-json", repo.CkeckAvailabilityJson)
+	mux.Get("/choose-room/{id}", repo.ChooseRoom)
 
 	mux.Get("/make-reservation", repo.Reservation)
 	mux.Post("/make-reservation", repo.PostReservation)

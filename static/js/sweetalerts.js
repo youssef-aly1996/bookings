@@ -72,7 +72,6 @@ document.getElementById("search-availability-button").addEventListener("click", 
           const response = await fetch("/search-availability-json", {
             method: 'post',
             body: formData,
-            headers: new Headers({'X-Form':'post-it'})
           });
           let json = await response.json()
           console.log(json);

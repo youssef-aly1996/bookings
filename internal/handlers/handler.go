@@ -10,6 +10,7 @@ import (
 	"github.com/youssef-aly1996/bookings/internal/erroring"
 	"github.com/youssef-aly1996/bookings/internal/models"
 	"github.com/youssef-aly1996/bookings/internal/models/reservation"
+	"github.com/youssef-aly1996/bookings/internal/models/room"
 	"github.com/youssef-aly1996/bookings/internal/models/roomrestriction"
 )
 
@@ -19,6 +20,7 @@ var (
 	dbrepo, err = pgrepo.NewPgRepo()
 	rs          = reservation.New(dbrepo)
 	rr          = roomrestriction.New(dbrepo)
+	rh          = room.New(dbrepo)
 )
 
 type Repository struct {
