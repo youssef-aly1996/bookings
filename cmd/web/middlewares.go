@@ -33,3 +33,14 @@ func scrfLoad(next http.Handler) http.Handler {
 func sessionLoad(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
 }
+
+func Auth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		if ! repo.IsAutuhroized(r) {
+			session.Put(r.Context(), "error", "you need to log in")
+			http.Redirect(rw, r, "/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(rw, r)
+	})
+}

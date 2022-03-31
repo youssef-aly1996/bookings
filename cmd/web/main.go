@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/gob"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/youssef-aly1996/bookings/internal/config"
 	"github.com/youssef-aly1996/bookings/internal/handlers"
+	"github.com/youssef-aly1996/bookings/internal/models"
 	"github.com/youssef-aly1996/bookings/internal/models/reservation"
 	"github.com/youssef-aly1996/bookings/internal/models/user"
 	"github.com/youssef-aly1996/bookings/internal/render"
@@ -28,6 +30,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer close(appConfig.MailChan)
+	listenForMail()
 	appConfig.PortNumber = ":3000"
 	server := &http.Server{
 		Addr:    appConfig.PortNumber,
@@ -47,8 +51,18 @@ func run() error {
 	//what i am going to put into the session
 	gob.Register(reservation.Reservation{})
 	gob.Register(user.User{})
+
+	//listening for email signals
+	mailChan := make(chan models.MailModel)
+	appConfig.MailChan = mailChan
+
+	inProduction := flag.Bool("production", true, "Application is in production")
+	useCache := flag.Bool("cache", true, "Use template cache")
+	appConfig.InProduction = *inProduction
+	appConfig.UseCache = *useCache
+	flag.Parse()
+
 	//creating application session
-	appConfig.InProduction = false
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
@@ -63,7 +77,6 @@ func run() error {
 		return err
 	}
 	appConfig.TempalteCache = tc
-	appConfig.UseCache = false
 	render.NewTemplate(appConfig)
 
 	return nil

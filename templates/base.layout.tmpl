@@ -38,12 +38,30 @@
                 <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
               </div>
             </li>
-
             <li class="nav-item">
               <a class="nav-link" href="/search-availability" tabindex="-1" aria-disabled="true">Book Now</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/contact" tabindex="-1" aria-disabled="true">Contact</a>
+            
+             <li class="nav-item">
+             {{if eq .IsAuthenticated 1}}
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Admin
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/admin/dashboard">dashboard</a>
+                  <a class="dropdown-item" href="/logout">Logout</a>
+                </div>
+              </li>
+             {{else}}
+                <a class="nav-link" href="/login" tabindex="-1" aria-disabled="true">Login</a>
+             {{end}}   
+            </li>
+             <li class="nav-item">
+                <a class="nav-link" href="/signup">Signup</a>
             </li>
           </ul>
           <form class="form-inline my-2 my-lg-0">

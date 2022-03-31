@@ -10,8 +10,9 @@ type TemplateData struct {
 	Flash     string
 	Error     string
 	Warning   string
+	IsAuthenticated int
 }
 
-func NewTemplateData() *TemplateData {
-	return &TemplateData{}
+func NewTemplateData() TemplateData {
+	return TemplateData{}
 }

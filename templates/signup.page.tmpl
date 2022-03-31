@@ -1,0 +1,50 @@
+{{template "base" .}}
+{{define "content"}}
+<div class="container">
+    <div class="row">
+      <div class="col">
+        <h1 class="text-center mt-4">Signup</h1>
+
+        <form action="/signup" method="post" name="signup-form" class="" novalidate>
+          <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+          
+            <div class="form-group mt-4">        
+                <label for="first_name" class="col-form-label-lg">First Name:</label>
+            {{with .Form.Errors.Get "first_name"}}
+                <label class="col-form-label-lg text-danger">{{.}}</label>
+            {{end}}
+                <input type="text" class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}" 
+                name="first_name" id="first_name" value="{{index .Data "first_name"}}" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="last_name" class="col-form-label-lg">Last Name:</label>
+            {{with .Form.Errors.Get "last_name"}}
+                <label class="col-form-label-lg text-danger">{{.}}</label>
+            {{end}}
+                <input type="text" name="last_name" value="{{index .Data "last_name"}}" 
+                id="last_name" class="form-control {{with .Form.Errors.Get "last_name"}}is-invalid{{end}}" 
+                required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="email" class="col-form-label-lg">Email:</label>
+            {{with .Form.Errors.Get "email"}}
+                <label class="col-form-label-lg text-danger">{{.}}</label>
+            {{end}}
+                <input type="email" name="email" value="{{index .Data "email"}}" 
+                id="email" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-form-label-lg">Password:</label>
+            {{with .Form.Errors.Get "password"}}
+                <label class="col-form-label-lg text-danger">{{.}}</label>
+            {{end}}
+                <input type="password" name="password" value="{{index .Data "password"}}" 
+                id="password" class="form-control {{with .Form.Errors.Get "password"}}is-invalid{{end}}" required autocomplete="off">
+            </div>
+            <hr>
+            <input type="submit" value="Signup" class="btn btn-primary">       
+        </form>
+      </div>
+    </div>
+  </div>
+{{end}}

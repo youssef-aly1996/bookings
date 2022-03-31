@@ -13,4 +13,5 @@ type Reservation struct {
 	RoomId    int
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	RoomName string
 }

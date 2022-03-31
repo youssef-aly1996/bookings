@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/youssef-aly1996/bookings/internal/models"
 )
 
 type AppConfig struct {
@@ -15,6 +16,7 @@ type AppConfig struct {
 	PortNumber    string
 	Session       *scs.SessionManager
 	InProduction  bool
+	MailChan chan models.MailModel
 }
 
 func NewAppConfig() *AppConfig {

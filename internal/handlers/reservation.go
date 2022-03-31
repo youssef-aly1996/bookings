@@ -2,18 +2,15 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
-	"strconv"
-	"time"
 
 	"github.com/youssef-aly1996/bookings/internal/forms"
+	"github.com/youssef-aly1996/bookings/internal/models"
 	"github.com/youssef-aly1996/bookings/internal/models/reservation"
-	"github.com/youssef-aly1996/bookings/internal/models/roomrestriction"
 	"github.com/youssef-aly1996/bookings/internal/render"
 )
-
-var res = reservation.Reservation{}
 
 //Reservation renders the make reservation page template
 func (repo *Repository) Reservation(rw http.ResponseWriter, r *http.Request) {
@@ -45,34 +42,23 @@ func (repo *Repository) Reservation(rw http.ResponseWriter, r *http.Request) {
 
 //PostReservation allows clients to fill out a new reservation form
 func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request) {
+	res, ok := repo.App.Session.Get(r.Context(), "reservation").(reservation.Reservation)
+	if !ok {
+		repo.App.Session.Put(r.Context(), "error", "cannot get reservation model from the seesion")
+		td.Error = repo.App.Session.PopString(r.Context(), "error")
+		http.Redirect(rw, r, "/search-availability", http.StatusTemporaryRedirect)
+		return
+	}
 	err := r.ParseForm()
 	if err != nil {
 		repo.ServerErrors(rw, err)
 		return
 	}
-	layout := "2006-01-01"
-	sd := r.FormValue("start_date")
-	ed := r.FormValue("end_date")
-
-	startDate, err := time.Parse(layout, sd)
-	if err != nil {
-		repo.ServerErrors(rw, err)
-		return
-	}
-	endDate, err := time.Parse(layout, ed)
-	if err != nil {
-		repo.ServerErrors(rw, err)
-		return
-	}
-	rId, _ := strconv.Atoi(r.FormValue("room_id"))
 
 	res.FirstName = r.Form.Get("first_name")
 	res.LastName = r.FormValue("last_name")
 	res.Email = r.FormValue("email")
 	res.Phone = r.FormValue("phone")
-	res.StartDate = startDate
-	res.EndDate = endDate
-	res.RoomId = rId
 
 	form := forms.NewForm(r.PostForm)
 	form.Required("first_name", "last_name", "email")
@@ -86,24 +72,27 @@ func (repo *Repository) PostReservation(rw http.ResponseWriter, r *http.Request)
 		render.Template(rw, "make-reservation.page.tmpl", td)
 		return
 	}
-	id, err := rs.Insert(res)
+	_, err = rs.Insert(res)
 	if err != nil {
 		repo.Erroring.ServerErrors(rw, err)
-	}
-	rm := roomrestriction.RoomRestriction{
-		StartDate:     startDate,
-		EndDate:       endDate,
-		RoomId:        rId,
-		ReservationId: id,
-		RestrictionId: 1,
-	}
-	err = rr.Insert(rm)
-	if err != nil {
-		repo.Erroring.ServerErrors(rw, err)
-		return
 	}
 
+	//sending email for room booking
+	htmlMsg := fmt.Sprintf(
+		`<strong>reservation confirmation</strong><br>
+		Dear %s:, <br>
+		this completes your reservation from %s to %s.	
+		`, res.FirstName, res.StartDate.Format("2006-02-01"), res.EndDate.Format("2006-02-01"))
+	mailData := models.MailModel {
+		To: res.Email,
+		From: "joe@here.com",
+		Subject: "reservation confirmation",
+		Content: htmlMsg,
+	}
+	repo.App.MailChan <- mailData
+	
 	repo.App.Session.Put(r.Context(), "reservation", res)
+	repo.App.Session.Put(r.Context(), "success", "your reservation has been completed")
 	http.Redirect(rw, r, "/reservation-summary", http.StatusSeeOther)
 }
 
@@ -117,9 +106,11 @@ func (repo *Repository) ReservationSummary(rw http.ResponseWriter, r *http.Reque
 		http.Redirect(rw, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
-	repo.App.Session.Remove(r.Context(), "reservation")
+	td.Flash = repo.App.Session.PopString(r.Context(), "success")
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 	td.Data = data
 	render.Template(rw, "reservation-summary.page.tmpl", td)
 }
+
+

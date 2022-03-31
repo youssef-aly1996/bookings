@@ -8,20 +8,26 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/youssef-aly1996/bookings/internal/config"
 	"github.com/youssef-aly1996/bookings/internal/models"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate": HumanDate,
+}
 var pathToTemplates = "./templates"
 var app *config.AppConfig
 
 func NewTemplate(a *config.AppConfig) {
 	app = a
 }
+func HumanDate(t time.Time) string {
+	return t.Format("2006-01-02")
+}
 
-func Template(rw http.ResponseWriter, tmpl string, td *models.TemplateData) error {
+func Template(rw http.ResponseWriter, tmpl string, td models.TemplateData) error {
 	var tc map[string]*template.Template
 	var err error
 	if app.UseCache {
